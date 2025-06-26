@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers\ApiController;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Models\Lesson;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+class UserController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $users = new UserCollection(User::all());
+        return $users->response()->setStatusCode(200,'All Users');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validator=Validator::make($request->all(),[
+           'userName'=>'required',
+           'userEmail'=>'required|email|unique:users,email',
+           'userPassword'=>'required|min:8',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        }
+        $validatedData=$validator->validated();
+        $validatedData['userPassword']=Hash::make($validatedData['userPassword']);
+        $UserData=User::create([
+            'name'=>$validatedData['userName'],
+            'email'=>$validatedData['userEmail'],
+            'password'=>$validatedData['userPassword'],
+            'created_at'=>now(),
+            'updated_at'=>now(),
+        ]);
+
+        $dataSent=new UserResource($UserData);
+        return $dataSent->response()->setStatusCode(200,'User Created');
+
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+            $user = new UserResource(User::findOrFail($id));
+            return $user->response()->setStatusCode(200,'User');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $CheckUser=User::findOrFail($id);
+        $validator=Validator::make($request->all(),[
+            'userName'=>'required',
+            'userEmail'=>'required|email|unique:users,email,'.$CheckUser->id,
+            'userPassword'=>'required|min:8',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        }
+        $validatedData=$validator->validated();
+        $validatedData['userPassword']=Hash::make($validatedData['userPassword']);
+        $CheckUser->update([
+            'name'=>$validatedData['userName'],
+            'email'=>$validatedData['userEmail'],
+            'password'=>$validatedData['userPassword'],
+            'updated_at'=>now(),
+        ]);
+        $DataSent=new UserResource($CheckUser);
+        return $DataSent->response()->setStatusCode(200,'User Updated');
+
+
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $UserCheck=User::findOrFail($id);
+        $UserCheck->delete();
+        return response()->json([
+            'message'=>'User Deleted',
+        ],200);
+    }
+
+    public function userLessons($id)
+    {
+            $LessonsOfTheUser=User::with('lessons:id,title,body,user_id')
+                ->select('id','name','email')
+                ->where('id',$id)
+                ->findOrFail($id);
+            return response()->json([
+                'LessonsOfTheUser'=>$LessonsOfTheUser,
+            ],200);
+    }
+}
