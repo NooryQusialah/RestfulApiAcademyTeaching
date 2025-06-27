@@ -19,6 +19,7 @@ class LessonController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Lesson::class);
         $validator=Validator::make($request->all(),[
            'LessonTitle'=>'required',
            'LessonBody'=>'required',
@@ -49,6 +50,7 @@ class LessonController extends Controller
     public function update(Request $request,$id)
     {
         $LessonCheck=Lesson::findOrFail($id);
+        $this->authorize('update', $LessonCheck);
         $validator=Validator::make($request->all(),[
             'LessonTitle'=>'required',
             'LessonBody'=>'required',
@@ -70,8 +72,9 @@ class LessonController extends Controller
 
     public function destroy($id)
     {
-        $UserCheck=Lesson::findOrFail($id);
-        $UserCheck->delete();
+        $LessonCheck=Lesson::findOrFail($id);
+        $this->authorize('delete', $LessonCheck);
+        $LessonCheck->delete();
         return response()->json([
             'message'=>'Lesson Deleted'
         ],200);

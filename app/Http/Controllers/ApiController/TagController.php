@@ -22,6 +22,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->authorize('create', Tag::class);
                 $Validator=Validator::make($request->all(),[
                     'tagName'=>'required|unique:tags,name'
                 ]);
@@ -56,7 +57,7 @@ class TagController extends Controller
     public function update(Request $request, $id)
     {
         $TagCheck=Tag::findOrFail($id);
-
+        $this->authorize('update', $TagCheck);
         $Validator=Validator::make($request->all(),[
             'tagName'=>'required|unique:tags,name,'.$TagCheck->id
         ]);
@@ -79,6 +80,7 @@ class TagController extends Controller
     public function destroy($id)
     {
         $TagCheck=Tag::findOrFail($id);
+        $this->authorize('delete', $TagCheck);
         $TagCheck->delete();
         return response()->json([
             'message'=>'Tag Deleted Successfully',

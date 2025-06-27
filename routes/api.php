@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController\LessonController;
+use App\Http\Controllers\ApiController\LoginController;
 use App\Http\Controllers\ApiController\TagController;
 use App\Http\Controllers\ApiController\UserController;
 use Illuminate\Http\Request;
@@ -11,12 +12,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+// this is one of the way to make the authriztion middleware('auth.basic')
 Route::prefix('v1')->group(function () {
    Route::apiResource('users', UserController::class);
    Route::controller(UserController::class)->group(function () {
        Route::get('/user/{id}/lessons', 'userLessons')->name('user.lessons');;
    });
-
 
    Route::apiResource('lessons', LessonController::class);
     Route::controller(LessonController::class)->group(function () {

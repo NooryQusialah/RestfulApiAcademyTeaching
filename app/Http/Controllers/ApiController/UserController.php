@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\OneBasicMiddleware;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\Lesson;
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
+
+   public function __construct()
+    {
+//        $this->middleware(OneBasicMiddleware::class);
+       $this -> middleware('auth:sanctum');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -28,10 +36,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
         $validator=Validator::make($request->all(),[
            'userName'=>'required',
            'userEmail'=>'required|email|unique:users,email',
            'userPassword'=>'required|min:8',
+            'role'=>'required',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors(),422);
@@ -42,6 +52,7 @@ class UserController extends Controller
             'name'=>$validatedData['userName'],
             'email'=>$validatedData['userEmail'],
             'password'=>$validatedData['userPassword'],
+            'role_id'=>$validatedData['role'],
             'created_at'=>now(),
             'updated_at'=>now(),
         ]);
@@ -66,6 +77,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $CheckUser=User::findOrFail($id);
+        $this->authorize('update', $CheckUser);
         $validator=Validator::make($request->all(),[
             'userName'=>'required',
             'userEmail'=>'required|email|unique:users,email,'.$CheckUser->id,
@@ -95,6 +107,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $UserCheck=User::findOrFail($id);
+        $this->authorize('delete', $UserCheck);
         $UserCheck->delete();
         return response()->json([
             'message'=>'User Deleted',
