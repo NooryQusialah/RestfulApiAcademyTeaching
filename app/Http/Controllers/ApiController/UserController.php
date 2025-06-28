@@ -25,9 +25,10 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = new UserCollection(User::all());
+        $limit=($request->limit > 50) ? 10 : $request->limit;
+        $users = new UserCollection(User::paginate($limit));
         return $users->response()->setStatusCode(200,'All Users');
     }
 

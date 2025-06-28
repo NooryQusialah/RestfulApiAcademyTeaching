@@ -12,9 +12,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TagController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $TagsData= TagResource::collection(Tag::all());
+        $limit=($request->limit > 50) ? 10 : $request->limit;
+        $TagsData= TagResource::collection(Tag::paginate($limit));
         return $TagsData->response()->setStatusCode(200,'All Tags Data');
     }
 

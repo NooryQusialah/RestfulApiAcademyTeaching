@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class LessonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $Lessons = LessonResource::collection(Lesson::all());
+        $limit=($request->limit > 50) ? 10 : $request->limit;
+        $Lessons = LessonResource::collection(Lesson::paginate($limit));
         return $Lessons->response()->setStatusCode(200,'All Lessons');
     }
 

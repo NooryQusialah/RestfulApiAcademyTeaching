@@ -26,12 +26,13 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->renderable(function (MethodNotAllowedHttpException $e) {
             return response()->json([
-               'error'=>'Method Not Allowed',
+               'error'=>' Not True Request Type ',
             ],405);
         });
-
-        $exceptions->renderable(function (Throwable $e): void {
-
+        $exceptions->renderable(function (Throwable $e) {
+            return response()->json([
+                'error'=>'some thing went wrong',
+            ],500);
         });
 
     })->create();
