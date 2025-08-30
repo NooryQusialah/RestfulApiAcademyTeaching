@@ -52,7 +52,7 @@ class TagController extends Controller
     public function show($id)
     {
         $TagDetails=new TagResource(Tag::findOrFail($id));
-        return  $TagDetails->response()->setStatusCode(200,"Tag Details"); ;
+        return  $TagDetails->response()->setStatusCode(200,"Tag Details");
     }
 
     public function update(Request $request, $id)

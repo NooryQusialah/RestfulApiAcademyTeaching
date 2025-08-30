@@ -13,8 +13,10 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-// this is one of the way to make the authriztion middleware('auth.basic')
-Route::prefix('v1')->group(function () {
+
+
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+
    Route::apiResource('users', UserController::class);
    Route::controller(UserController::class)->group(function () {
        Route::get('/user/{id}/lessons', 'userLessons')->name('user.lessons');;

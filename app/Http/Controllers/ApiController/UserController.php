@@ -17,11 +17,11 @@ class UserController extends Controller
 {
 
 
-   public function __construct()
-    {
-//        $this->middleware(OneBasicMiddleware::class);
-       $this -> middleware('auth:sanctum');
-    }
+//   public function __construct()
+//    {
+////        $this->middleware(OneBasicMiddleware::class);
+//       $this -> middleware('auth:sanctum');
+//    }
     /**
      * Display a listing of the resource.
      */
