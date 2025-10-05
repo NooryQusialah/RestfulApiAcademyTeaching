@@ -14,12 +14,14 @@ class UserCredentialService
         $this->userCredentialRepository = $userCredentialRepository;
     }
 
-    public function register($userRequest )
+    public function register($userRequest)
     {
         $data = $userRequest->all();
         $data['password'] = Hash::make($data['password']);
+
         return $this->userCredentialRepository->register($data);
     }
+
 
     public function login(array $credentials)
     {
