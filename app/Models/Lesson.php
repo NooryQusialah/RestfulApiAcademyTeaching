@@ -9,14 +9,10 @@ class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','body','user_id','created_at','updated_at'];
+    protected $fillable = ['title', 'content', 'video_url', 'duration', 'order', 'course_id'];
 
-    public function user()
+    public function course()
     {
-        return $this->belongsTo(User::class);
-    }
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class,'lesson_tags');
+        return $this->belongsTo(Course::class);
     }
 }

@@ -3,24 +3,16 @@
 namespace App\Listeners;
 
 use App\Events\UserLogedIn;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class RevokedToken
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
+    public function handle(UserLogedIn $event)
     {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
-    public function handle(UserLogedIn $event): void
-    {
+        // Revoke all tokens for the user
         $event->user->tokens()->delete();
+
+        // Log the token revocation
+        Log::info('All tokens revoked for user: ' . $event->user->id);
     }
 }

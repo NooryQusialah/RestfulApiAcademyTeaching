@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,24 +17,38 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-//        $middleware->append(\App\Http\Middleware\OneBasicMiddleware::class);
+        // $middleware->append(\App\Http\Middleware\OneBasicMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
 
-        $exceptions->renderable(function(NotFoundHttpException $e) {
-            return response()->json([
-                'error'=>'data not found ',
-            ],404);
-        });
-        $exceptions->renderable(function (MethodNotAllowedHttpException $e) {
-            return response()->json([
-               'error'=>' Not True Request Type ',
-            ],405);
-        });
-        $exceptions->renderable(function (Throwable $e) {
-            return response()->json([
-                'error'=>'some thing went wrong',
-            ],500);
+          // 404 Not Found
+        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json(['error' => 'data not found'], 404);
+            }
         });
 
-    })->create();
+        // 405 Wrong method
+        $exceptions->renderable(function (MethodNotAllowedHttpException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json(['error' => 'Not True Request Type'], 405);
+            }
+        });
+
+        // 401 Unauthorized (no token)
+        $exceptions->renderable(function (AuthenticationException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json(['error' => 'unauthorized'], 401);
+            }
+        });
+
+        // 403 Forbidden (Policy Deny)
+        $exceptions->renderable(function (AuthorizationException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'error' => $e->getMessage() ?: 'Forbidden',
+                ], 403);
+            }
+        });
+    })
+    ->create();

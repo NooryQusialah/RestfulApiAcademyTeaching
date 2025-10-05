@@ -1,35 +1,14 @@
 <?php
 
-use App\Http\Controllers\ApiController\LessonController;
-use App\Http\Controllers\ApiController\LoginController;
-use App\Http\Controllers\ApiController\TagController;
-use App\Http\Controllers\ApiController\UserController;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserCredentialController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-
-Route::post('/login', [LoginController::class, 'login'])->name('login');
-
-
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-
-   Route::apiResource('users', UserController::class);
-   Route::controller(UserController::class)->group(function () {
-       Route::get('/user/{id}/lessons', 'userLessons')->name('user.lessons');;
-   });
-
-   Route::apiResource('lessons', LessonController::class);
-    Route::controller(LessonController::class)->group(function () {
-        Route::get('/lessons/{id}/tags', 'LessonTags')->name('lessons.tags');
-
-    });
-
-    Route::apiResource('tags', TagController::class);
-    Route::controller(TagController::class)->group(function () {
-        Route::get('/tags/{id}/lessons', 'TagLessons')->name('tags.lessons');
-    });
+Route::prefix('v1')->group(function () {
+    Route::post('/register', [UserCredentialController::class, 'register']);
+    Route::post('/login', [UserCredentialController::class, 'login']);
+    Route::post('/logout', [UserCredentialController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/refresh-token', [UserCredentialController::class, 'refreshToken'])->middleware('auth:sanctum');
 });
