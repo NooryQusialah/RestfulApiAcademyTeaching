@@ -2,6 +2,7 @@
 
 
 
+use App\Http\Controllers\ApiController\CourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserCredentialController;
@@ -29,33 +30,44 @@ Route::controller(RoleController::class)->prefix('roles')
        ->middleware(['check.admin'])
        ->group(function () {
         Route::get('/', 'index');
-        Route::get('/{id}', 'show');
+        Route::get('/{id}', 'show')->whereNumber('id');
         Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-        Route::post('/{roleId}/permission/assign', 'assignPermission');
-        Route::delete('/{roleId}/permission/remove', 'removePermission');
+        Route::put('/{id}', 'update')->whereNumber('id');
+        Route::delete('/{id}', 'destroy')->whereNumber('id');
+        Route::post('/{roleId}/permission/assign', 'assignPermission')->whereNumber('roleId');
+        Route::delete('/{roleId}/permission/remove', 'removePermission')->whereNumber('roleId');
 });
 
 Route::controller(PermissionController::class)
        ->prefix('permissions')->middleware(['check.admin'])
        ->group(function () {
         Route::get('/', 'index');
-        Route::get('/{id}', 'show');
+        Route::get('/{id}', 'show')->whereNumber('id');
         Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-        Route::post('/{permissionId}/role/assign', 'assignRole');
-        Route::delete('/{permissionId}/role/remove', 'removeRole');
+        Route::put('/{id}', 'update')->whereNumber('id');
+        Route::delete('/{id}', 'destroy')->whereNumber('id');
+        Route::post('/{permissionId}/role/assign', 'assignRole')->whereNumber('permissionId');
+        Route::delete('/{permissionId}/role/remove', 'removeRole')->whereNumber('permissionId');
 });
 
 Route::controller(TeacherController::class)->prefix('teachers')
        ->group(function () {
         Route::get('/', 'index');
-        Route::get('/{id}', 'show');
+        Route::get('/{id}', 'show')->whereNumber('id');
         Route::post('/', 'store');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'destroy');
-        Route::get('/{id}/courses', 'courses');
+        Route::put('/{id}', 'update')->whereNumber('id');
+        Route::delete('/{id}', 'destroy')->whereNumber('id');
+        Route::get('/{id}/courses', 'courses')->whereNumber('id');
 });
+
+
+Route::controller(CourseController::class)->prefix('courses')
+       ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show')->whereNumber('id');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update')->whereNumber('id');
+        Route::delete('/{id}', 'destroy')->whereNumber('id');
+});
+
 });
