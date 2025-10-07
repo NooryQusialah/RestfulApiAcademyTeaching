@@ -8,14 +8,14 @@ class ResponseHelper
     {
         return response()->json([
             'message' => $message,
-            'data' => $data
+            'data' => $data,
         ], $status);
     }
 
     public static function error($message, $status = 400)
     {
         return response()->json([
-            'error' => $message
+            'error' => $message,
         ], $status);
     }
 }

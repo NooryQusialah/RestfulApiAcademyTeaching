@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Interfaces\TeacherInterface;
 use App\Repositories\TeacherRepository;
 
 class TeacherService

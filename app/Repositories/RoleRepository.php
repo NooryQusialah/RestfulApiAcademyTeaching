@@ -26,12 +26,14 @@ class RoleRepository implements RoleInterface
     {
         $role = Role::findOrFail($id);
         $role->update($data);
+
         return $role;
     }
 
     public function deleteRole($id)
     {
         $role = Role::findOrFail($id);
+
         return $role->delete();
     }
 
@@ -39,6 +41,7 @@ class RoleRepository implements RoleInterface
     {
         $role = Role::findOrFail($roleId);
         $role->givePermissionTo($permissionName);
+
         return $role;
     }
 
@@ -46,6 +49,7 @@ class RoleRepository implements RoleInterface
     {
         $role = Role::findOrFail($roleId);
         $role->revokePermissionTo($permissionIds);
+
         return $role;
     }
 }

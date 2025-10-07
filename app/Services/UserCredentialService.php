@@ -16,12 +16,16 @@ class UserCredentialService
 
     public function register($userRequest)
     {
-        $data = $userRequest->all();
-        $data['password'] = Hash::make($data['password']);
+        // $data = $userRequest->all();
+        $userRequest['password'] = Hash::make($userRequest['password']);
 
-        return $this->userCredentialRepository->register($data);
+        return $this->userCredentialRepository->register($userRequest);
     }
 
+    public function updateUser(array $data, $userId)
+    {
+        return $this->userCredentialRepository->updateUser($data, $userId);
+    }
 
     public function login(array $credentials)
     {

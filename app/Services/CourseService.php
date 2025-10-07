@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\CourseInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Models\Course;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CourseService
 {

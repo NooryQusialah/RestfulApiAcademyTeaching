@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Interfaces\RoleInterface;
 use App\Repositories\RoleRepository;
 
 class RoleService
@@ -48,5 +47,4 @@ class RoleService
     {
         return $this->roleRepository->removePermissionFromRole($roleId, $permissionName);
     }
-    
 }

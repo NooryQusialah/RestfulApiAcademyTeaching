@@ -19,7 +19,7 @@ class CourseRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-        public function rules(): array
+    public function rules(): array
     {
         return [
             'title' => 'required|string|max:255',
@@ -31,5 +31,4 @@ class CourseRequest extends FormRequest
             'status' => 'required|in:draft,published',
         ];
     }
-
 }

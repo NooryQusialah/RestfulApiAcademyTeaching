@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Interfaces\PermissionInterface;
 use App\Repositories\PermissionRepository;
 
 class PermissionService
@@ -43,6 +42,7 @@ class PermissionService
     {
         return $this->permissionRepository->assignRoleToPermission($permissionId, $roleName);
     }
+
     public function removeRoleFromPermission($permissionId, $roleName)
     {
         return $this->permissionRepository->removeRoleFromPermission($permissionId, $roleName);

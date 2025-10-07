@@ -18,9 +18,9 @@ class LessonFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'=>User::inRandomOrder()->first()->id,
-            'title'=>$this->faker->sentence(rand(1,5)),
-            'body'=>$this->faker->paragraph(rand(1,5)),
+            'user_id' => User::inRandomOrder()->first()->id,
+            'title' => $this->faker->sentence(rand(1, 5)),
+            'body' => $this->faker->paragraph(rand(1, 5)),
         ];
     }
 }

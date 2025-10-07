@@ -9,23 +9,24 @@ class TeacherResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'expertise' => $this->expertise,
+            'teacher_id' => $this->id,
+            'area_of_expertise' => $this->expertise,
             'qualification' => $this->qualification,
-            'experience_years' => $this->experience_years,
-            'verified' => $this->verified,
-            'user' => $this->when($this->relationLoaded('user'), function () {
-                return [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                    'email' => $this->user->email,
-                ];
+            'years_of_experience' => $this->experience_years,
+            'is_verified' => (bool) $this->verified,
+
+            // Use UserResource (without token)
+            'user_info' => $this->whenLoaded('user', function () {
+                return (new UserResource($this->user))->withoutToken();
             }),
-            'courses' => $this->when($this->relationLoaded('courses'), function () {
+
+            // Include courses only when eager-loaded
+            'assigned_courses' => $this->whenLoaded('courses', function () {
                 return $this->courses;
             }),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
         ];
     }
 }

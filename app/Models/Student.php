@@ -36,8 +36,9 @@ class Student extends Model
     {
         return $this->hasMany(QuizAttempt::class);
     }
-        public function courses()
-        {
-            return $this->belongsToMany(Course::class, 'student_course');
-        }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'student_course');
     }
+}

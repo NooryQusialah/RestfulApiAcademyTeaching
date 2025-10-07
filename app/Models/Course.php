@@ -44,13 +44,14 @@ class Course extends Model
     {
         return $this->hasMany(Payment::class);
     }
-        public function teachers()
-        {
-            return $this->belongsToMany(Teacher::class, 'teacher_course');
-        }
 
-        public function students()
-        {
-            return $this->belongsToMany(Student::class, 'student_course');
-        }
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'teacher_course');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_course');
+    }
 }

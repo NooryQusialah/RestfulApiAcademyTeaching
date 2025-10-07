@@ -20,7 +20,7 @@ class LessonTagFactory extends Factory
     {
         return [
             'lesson_id' => Lesson::inRandomOrder()->first()->id,
-            'tag_id'=>Tag::inRandomOrder()->first()->id,
+            'tag_id' => Tag::inRandomOrder()->first()->id,
         ];
     }
 }

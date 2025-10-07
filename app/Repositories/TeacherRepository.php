@@ -26,18 +26,21 @@ class TeacherRepository implements TeacherInterface
     {
         $teacher = Teacher::findOrFail($id);
         $teacher->update($data);
+
         return $teacher;
     }
 
     public function deleteTeacher($id)
     {
         $teacher = Teacher::findOrFail($id);
+
         return $teacher->delete();
     }
 
     public function getTeacherCourses($id)
     {
         $teacher = Teacher::with('courses')->findOrFail($id);
+
         return $teacher->courses;
     }
 }

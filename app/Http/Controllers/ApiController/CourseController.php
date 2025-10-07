@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use App\Exceptions\Handler;
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Services\CourseService;
-use App\Helpers\ResponseHelper;
-use App\Exceptions\Handler;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -24,6 +24,7 @@ class CourseController extends Controller
         try {
             $limit = $request->query('limit', 10);
             $courses = $this->courseService->getAllCourses($limit);
+
             return ResponseHelper::success(CourseResource::collection($courses));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -34,6 +35,7 @@ class CourseController extends Controller
     {
         try {
             $course = $this->courseService->getCourseById($id);
+
             return ResponseHelper::success(new CourseResource($course));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -45,6 +47,7 @@ class CourseController extends Controller
         try {
             // return response()->json(['message' => 'Test','data' => $request->all()]);
             $course = $this->courseService->createCourse($request->validated());
+
             return ResponseHelper::success(new CourseResource($course), 'Course created successfully.', 201);
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -55,6 +58,7 @@ class CourseController extends Controller
     {
         try {
             $course = $this->courseService->updateCourse($id, $request->validated());
+
             return ResponseHelper::success(new CourseResource($course), 'Course updated successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -65,6 +69,7 @@ class CourseController extends Controller
     {
         try {
             $this->courseService->deleteCourse($id);
+
             return ResponseHelper::success(null, 'Course deleted successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);

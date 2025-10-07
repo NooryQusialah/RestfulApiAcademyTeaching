@@ -30,12 +30,14 @@ class PermissionRepository implements PermissionInterface
     {
         $permission = Permission::findOrFail($id);
         $permission->update($data);
+
         return $permission;
     }
 
     public function deletePermission($id)
     {
         $permission = Permission::findOrFail($id);
+
         return $permission->delete();
     }
 
@@ -43,6 +45,7 @@ class PermissionRepository implements PermissionInterface
     {
         $permission = Permission::findOrFail($permissionId);
         $permission->assignRole($roleName);
+
         return $permission;
     }
 
@@ -52,10 +55,9 @@ class PermissionRepository implements PermissionInterface
         if ($permission->hasRole($roleName)) {
 
             $permission->removeRole($roleName);
+
             return $permission;
-        }
-        else
-        {
+        } else {
             return response()->json(['error' => 'Role not assigned to this permission.'], 400);
         }
 

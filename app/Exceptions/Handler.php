@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Exception;
 
 class Handler
 {
@@ -23,6 +23,6 @@ class Handler
             return response()->json(['error' => $exception->getMessage()], $exception->getStatusCode());
         }
 
-        return response()->json(['error' => 'An unexpected error occurred.','message'=>$exception->getMessage()], 500);
+        return response()->json(['error' => 'An unexpected error occurred.', 'message' => $exception->getMessage()], 500);
     }
 }

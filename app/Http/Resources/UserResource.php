@@ -6,15 +6,32 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    protected bool $hideToken = false;
+
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'token' => $this->when(isset($this->token), $this->token),
+        $data = [
+            'user_id' => $this->id,
+            'full_name' => $this->name,
+            'email_address' => $this->email,
+            'registered_at' => $this->created_at?->toDateTimeString(),
+            'last_updated_at' => $this->updated_at?->toDateTimeString(),
         ];
+
+        if (! $this->hideToken && isset($this->token)) {
+            $data['access_token'] = $this->token;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Hide the token from the response.
+     */
+    public function withoutToken(): static
+    {
+        $this->hideToken = true;
+
+        return $this;
     }
 }

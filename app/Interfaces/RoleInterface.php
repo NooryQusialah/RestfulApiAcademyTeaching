@@ -15,5 +15,6 @@ interface RoleInterface
     public function deleteRole($id);
 
     public function assignPermissionToRole($roleId, $permissionIdName);
+
     public function removePermissionFromRole($roleId, $permissionIds);
 }

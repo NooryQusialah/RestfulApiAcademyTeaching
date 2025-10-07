@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Interfaces\StudentInterface;
 use App\Repositories\StudentRepository;
 
 class StudentService

@@ -27,12 +27,14 @@ class CourseRepository implements CourseInterface
     {
         $course = Course::findOrFail($id);
         $course->update($data);
+
         return $course;
     }
 
     public function deleteCourse(int $id): bool
     {
         $course = Course::findOrFail($id);
+
         return $course->delete();
     }
 }

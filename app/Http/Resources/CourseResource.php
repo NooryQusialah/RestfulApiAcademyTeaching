@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CourseResource extends JsonResource
@@ -12,19 +11,19 @@ class CourseResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-     public function toArray($request)
+    public function toArray($request)
     {
         return [
-            'id'          => $this->id,
-            'title'       => $this->title,
+            'id' => $this->id,
+            'title' => $this->title,
             'description' => $this->description,
-            'thumbnail'   => $this->thumbnail,
-            'price'       => $this->price,
-            'category'    => $this->category,
-            'level'       => $this->level,
-            'status'      => $this->status,
-            'created_at'  => $this->created_at,
-            'updated_at'  => $this->updated_at,
+            'thumbnail' => $this->thumbnail,
+            'price' => $this->price,
+            'category' => $this->category,
+            'level' => $this->level,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

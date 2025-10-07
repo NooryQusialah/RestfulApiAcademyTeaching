@@ -13,6 +13,6 @@ class RevokedToken
         $event->user->tokens()->delete();
 
         // Log the token revocation
-        Log::info('All tokens revoked for user: ' . $event->user->id);
+        Log::info('All tokens revoked for user: '.$event->user->id);
     }
 }

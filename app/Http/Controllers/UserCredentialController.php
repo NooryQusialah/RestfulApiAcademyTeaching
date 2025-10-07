@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\UserCredentialService;
-use App\Http\Requests\UserRegisterRequest;
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Resources\UserResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Http\Resources\UserResource;
+use App\Services\UserCredentialService;
 
 class UserCredentialController extends Controller
 {
@@ -21,17 +21,39 @@ class UserCredentialController extends Controller
     {
         try {
 
-            $user = $this->userCredentialService->register($request);
+            $user = $this->userCredentialService->register($request->all());
 
-            if (!$user) {
+            if (! $user) {
 
                 return ResponseHelper::error('Registration failed', 500);
+
             }
+
             return ResponseHelper::success(new UserResource($user), 'User registered successfully');
-            
+
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Registration failed: ' . $e->getMessage()
+                'error' => 'Registration failed: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function update(UserRegisterRequest $userRegisterRequest, $userId)
+    {
+        try {
+
+            $user = $this->userCredentialService->updateUser($userRegisterRequest->all(), $userId);
+
+            if (! $user) {
+
+                return ResponseHelper::error('Update failed', 500);
+            }
+
+            return ResponseHelper::success((new UserResource($user))->withoutToken(), 'User updated successfully');
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Update failed: '.$e->getMessage(),
             ], 500);
             //  return ResponseHelper::error($e->getMessage(), 500);
         }
@@ -40,26 +62,27 @@ class UserCredentialController extends Controller
     public function login(UserLoginRequest $request)
     {
         try {
-                $result = $this->userCredentialService->login($request->validated());
-                $user = $result['user'];
-                $user->token = $result['token'];
+            $result = $this->userCredentialService->login($request->validated());
+            $user = $result['user'];
+            $user->token = $result['token'];
 
-                return response()->json([
-                    'token' => $result['token'],
-                ], 200);
+            return response()->json([
+                'user' => new UserResource($user),
+            ], 200);
 
-            } catch (\Exception $e) {
-                return ResponseHelper::error($e->getMessage(), 401);
-            }
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 401);
+        }
     }
 
     public function logout()
     {
         try {
             $this->userCredentialService->logout();
+
             return ResponseHelper::success(' ', 'Logout successful');
         } catch (\Exception $e) {
-                return ResponseHelper::error($e->getMessage(), 500);
+            return ResponseHelper::error($e->getMessage(), 500);
         }
     }
 
@@ -67,12 +90,13 @@ class UserCredentialController extends Controller
     {
         try {
             $result = $this->userCredentialService->refreshToken();
+
             return ResponseHelper::success([
                 'user' => new UserResource($result['user']),
                 'token' => $result['token'],
             ], 'Token refreshed successfully');
         } catch (\Exception $e) {
-                return ResponseHelper::error($e->getMessage(), 500);
+            return ResponseHelper::error($e->getMessage(), 500);
         }
     }
 }
