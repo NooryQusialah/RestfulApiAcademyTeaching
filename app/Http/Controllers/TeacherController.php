@@ -64,10 +64,13 @@ class TeacherController extends Controller
         }
     }
 
-    public function update(TeacherRequest $request, $id)
+    public function update(TeacherRequest $teacherRequest, UserRegisterRequest $userRequest, $id)
     {
         try {
-            $teacher = $this->teacherService->updateTeacher($id, $request->validated());
+            $userRequestData = $userRequest->validated();
+            $user = $this->userCredentialService->updateUser($userRequestData, $id);
+
+            $teacher = $this->teacherService->updateTeacher($id, $teacherRequest->validated());
 
             return ResponseHelper::success(new TeacherResource($teacher), 'Teacher updated successfully.');
         } catch (\Exception $e) {

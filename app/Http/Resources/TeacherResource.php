@@ -14,6 +14,7 @@ class TeacherResource extends JsonResource
             'qualification' => $this->qualification,
             'years_of_experience' => $this->experience_years,
             'is_verified' => (bool) $this->verified,
+            'user_id' => $this->user_id,
 
             // Use UserResource (without token)
             'user_info' => $this->whenLoaded('user', function () {

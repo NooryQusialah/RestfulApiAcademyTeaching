@@ -24,7 +24,8 @@ class TeacherRepository implements TeacherInterface
 
     public function updateTeacher($id, array $data)
     {
-        $teacher = Teacher::findOrFail($id);
+        $teacher = Teacher::where('user_id', $id)->firstOrFail();
+        // $teacher = Teacher::findOrFail($id); --- IGNORE ---
         $teacher->update($data);
 
         return $teacher;

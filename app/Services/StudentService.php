@@ -38,9 +38,34 @@ class StudentService
         return $this->studentRepository->deleteStudent($id);
     }
 
+    public function assignCourseToStudent($studentId, $courseId)
+    {
+        return $this->studentRepository->assignCourseToStudent($studentId, $courseId);
+    }
+
+    public function enrollmentInCourse(array $data)
+    {
+        return $this->studentRepository->enrollmentInCourse($data);
+    }
+
+    public function removeEnrollmentFromStudent($studentId, $courseId)
+    {
+        return $this->studentRepository->removeEnrollmentFromStudent($studentId, $courseId);
+    }
+
+    public function removeCourseFromStudent($studentId, $courseId)
+    {
+        return $this->studentRepository->removeCourseFromStudent($studentId, $courseId);
+    }
+
     public function getStudentCourses($id)
     {
         return $this->studentRepository->getStudentCourses($id);
+    }
+
+    public function getStudentCourse($courseId)
+    {
+        return $this->studentRepository->getStudentCourse($courseId);
     }
 
     public function getStudentEnrollments($id)

@@ -10,7 +10,7 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'user_id',
         'enrollment_number',
         'level',
         'major',
@@ -19,17 +19,12 @@ class Student extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
-    }
-
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
     }
 
     public function quizAttempts()

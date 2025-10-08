@@ -15,8 +15,6 @@ class UserCredentialRepository implements UserCredentialInterface
         $user->assignRole($data['role']);
         $user->tokens()->delete();
         $token = $user->createToken('authToken')->accessToken;
-
-        // Attach token to model for returning if needed
         $user->token = $token;
 
         return $user;
