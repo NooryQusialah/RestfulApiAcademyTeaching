@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\ApiController\CommentController;
 use App\Http\Controllers\ApiController\CourseController;
 use App\Http\Controllers\ApiController\LessonController;
+use App\Http\Controllers\ApiController\QuestionController;
 use App\Http\Controllers\ApiController\StudentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserCredentialController;
+use App\Http\Controllers\ApiController\QuizzeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware('auth:api')->group(function () {
@@ -92,4 +95,34 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
             Route::put('/{id}', 'update')->whereNumber('id');
             Route::delete('/{id}', 'destroy')->whereNumber('id');
         });
+
+
+    Route::controller(QuizzeController::class)->prefix('quizzes')
+        ->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show')->whereNumber('id');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update')->whereNumber('id');
+            Route::delete('/{id}', 'destroy')->whereNumber('id');
+      });
+
+    Route::controller(QuestionController::class)->prefix('questions')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show')->whereNumber('id');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update')->whereNumber('id');
+        Route::delete('/{id}', 'destroy')->whereNumber('id');
+    });
+
+    Route::controller(CommentController::class)->prefix('lessons/{lessonId}/comments')
+        ->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show')->whereNumber('id');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update')->whereNumber('id');
+            Route::delete('/{id}', 'destroy')->whereNumber('id');
+        });
+
+
 });

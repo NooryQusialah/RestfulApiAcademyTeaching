@@ -28,7 +28,5 @@ interface StudentInterface
 
     public function getStudentEnrollments($id);
 
-    public function getStudentPayments($id);
-
     public function getStudentQuizAttempts($id);
 }
