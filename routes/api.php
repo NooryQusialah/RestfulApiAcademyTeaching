@@ -16,7 +16,8 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
 
     Route::get('/test-role', function () {
         return 'You have the admin role!';
-    })->middleware(['auth:api', 'check.admin']);
+    })->middleware(['auth:api', 'role:admin']);
+
     Route::controller(UserCredentialController::class)
         ->group(function () {
             Route::post('/register', 'register')->withoutMiddleware('auth:api');
@@ -27,7 +28,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
         });
 
     Route::controller(RoleController::class)->prefix('roles')
-        ->middleware(['check.admin'])
+        ->middleware(['role:admin'])
         ->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'show')->whereNumber('id');
@@ -36,10 +37,13 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
             Route::delete('/{id}', 'destroy')->whereNumber('id');
             Route::post('/{roleId}/permission/assign', 'assignPermission')->whereNumber('roleId');
             Route::delete('/{roleId}/permission/remove', 'removePermission')->whereNumber('roleId');
+            Route::post('/user/assign/role','assignRoleToUser');
+            Route::put('/user/update/role','updateRoleOfUser');
+            Route::delete('/user/{userId}/remove/role','removeRoleFromUser')->whereNumber('userId');
         });
 
     Route::controller(PermissionController::class)
-        ->prefix('permissions')->middleware(['check.admin'])
+        ->prefix('permissions')->middleware(['role:admin'])
         ->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'show')->whereNumber('id');
@@ -68,7 +72,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
             Route::put('/{userId}', 'update')->whereNumber('userId');
             Route::delete('/{id}', 'destroy')->whereNumber('id');
 
-            Route::get('/courses', 'courses')->whereNumber('id');
+            Route::get('/courses', 'courses');
             Route::get('/courses/{courseId}', 'studentCourse')->whereNumber('courseId');
             Route::post('/courses', 'assignCourse');
             Route::delete('/courses/{courseId}', 'unassignCourse')->whereNumber('courseId');
@@ -115,7 +119,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
         Route::delete('/{id}', 'destroy')->whereNumber('id');
     });
 
-    Route::controller(CommentController::class)->prefix('lessons/{lessonId}/comments')
+     Route::controller(CommentController::class)->prefix('lessons/{lessonId}/comments')
         ->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'show')->whereNumber('id');

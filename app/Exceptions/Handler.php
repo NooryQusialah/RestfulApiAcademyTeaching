@@ -23,6 +23,10 @@ class Handler
             return response()->json(['error' => $exception->getMessage()], $exception->getStatusCode());
         }
 
+        if ($exception instanceof BaseAppException) {
+            return response()->json(['error' => $exception->getMessage()], $exception->statusCode());
+        }
+
         return response()->json(['error' => 'An unexpected error occurred.', 'message' => $exception->getMessage()], 500);
     }
 }

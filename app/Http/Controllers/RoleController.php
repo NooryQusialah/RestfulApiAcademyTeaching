@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\Handler;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\AssignUserRole;
 use App\Http\Requests\RoleRequest;
+use App\Http\Resources\RoleResource;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 
@@ -22,7 +24,10 @@ class RoleController extends Controller
         try {
             $roles = $this->roleService->getAllRoles();
 
-            return ResponseHelper::success($roles);
+            return ResponseHelper::success(
+                RoleResource::collection($roles),
+                'Roles retrieved successfully.'
+            );
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -33,7 +38,10 @@ class RoleController extends Controller
         try {
             $role = $this->roleService->getRoleById($id);
 
-            return ResponseHelper::success($role);
+            return ResponseHelper::success(
+                new RoleResource($role),
+                'Role retrieved successfully.'
+            );
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -44,7 +52,7 @@ class RoleController extends Controller
         try {
             $role = $this->roleService->createRole($request->validated());
 
-            return ResponseHelper::success($role, 'Role created successfully.');
+            return ResponseHelper::success(new RoleResource($role), 'Role created successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -55,7 +63,7 @@ class RoleController extends Controller
         try {
             $role = $this->roleService->updateRole($id, $request->validated());
 
-            return ResponseHelper::success($role, 'Role updated successfully.');
+            return ResponseHelper::success(new RoleResource($role), 'Role updated successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -78,7 +86,7 @@ class RoleController extends Controller
             $permissionName = $request->input('permission_name');
             $role = $this->roleService->assignPermissionToRole($roleId, $permissionName);
 
-            return ResponseHelper::success($role, 'Permission assigned to role successfully.');
+            return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission assigned successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -90,7 +98,40 @@ class RoleController extends Controller
             $permissionName = $request->input('permission_name');
             $role = $this->roleService->removePermissionFromRole($roleId, $permissionName);
 
-            return ResponseHelper::success($role, 'Permission removed from role successfully.');
+            return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission removed successfully.');
+        } catch (\Exception $e) {
+            return Handler::handle($e);
+        }
+    }
+
+    public function assignRoleToUser(AssignUserRole $assignUserRole)
+    {
+        try {
+            $user = $this->roleService->assignRoleToUser($assignUserRole->validated());
+
+            return ResponseHelper::success($user, 'Role assigned to user successfully.');
+        } catch (\Exception $e) {
+            return Handler::handle($e);
+        }
+    }
+
+    public function updateRoleOfUser(AssignUserRole $assignUserRole)
+    {
+        try {
+            $user = $this->roleService->updateRoleOfUser($assignUserRole->validated());
+
+            return ResponseHelper::success($user, 'User role updated successfully.');
+        } catch (\Exception $e) {
+            return Handler::handle($e);
+        }
+    }
+
+    public function removeRoleFromUser($userId)
+    {
+        try {
+            $user = $this->roleService->removeRoleFromUser($userId);
+
+            return ResponseHelper::success($user, 'Role removed from user successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
         }

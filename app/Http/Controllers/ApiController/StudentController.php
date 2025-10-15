@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Exceptions\Handler;
+use App\Exceptions\NotFoundException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EnrollmentRequest;
@@ -11,8 +12,13 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Http\Resources\StudentResource;
 use App\Services\StudentService;
 use App\Services\UserCredentialService;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log as FacadesLog;
+
+use function Illuminate\Log\log;
 
 class StudentController extends Controller
 {
@@ -46,10 +52,17 @@ class StudentController extends Controller
     public function show($id)
     {
         try {
+
             $student = $this->studentService->getStudentById($id);
+
+            if (!$student) {
+                throw new NotFoundException('Student not found.');
+            }
 
             return ResponseHelper::success(new StudentResource($student));
         } catch (\Exception $e) {
+
+            log::error('Error fetching student: ' . $e->getMessage());
             return Handler::handle($e);
         }
     }
@@ -115,7 +128,7 @@ class StudentController extends Controller
             return DB::transaction(function () use ($request, $enrollmentRequest) {
 
                 $courseId = $request->input('course_id');
-                $studentId = auth()->user()->student->id;
+                $studentId = Auth::user()->student->id;;
 
                 // return  response()->json(['data'=> $enrollmentRequest->validated() ]);
                 $enrollmentData = array_merge($enrollmentRequest->validated(), ['student_id' => $studentId, 'course_id' => $courseId]);
@@ -138,7 +151,7 @@ class StudentController extends Controller
     public function unassignCourse($courseId)
     {
         try {
-            $studentId = auth()->user()->student->id;
+            $studentId =Auth::user()->student->id;
 
             // Call the service method
             $response = $this->studentService->removeCourseFromStudent($studentId, $courseId);
@@ -161,13 +174,14 @@ class StudentController extends Controller
     public function courses()
     {
         try {
-            $id = auth()->user()->student->id;
+            $id=Auth::user()->student->id;
             $courses = $this->studentService->getStudentCourses($id);
 
             return ResponseHelper::success($courses);
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
+
     }
 
     public function studentCourse($courseId)

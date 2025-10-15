@@ -16,7 +16,7 @@ class StudentRepository implements StudentInterface
 
     public function getStudentById($id)
     {
-        return Student::with('user')->where('user_id', $id)->firstOrFail();
+        return Student::with('user')->where('user_id', $id)->first();
     }
 
     public function createStudent(array $data)
@@ -26,7 +26,7 @@ class StudentRepository implements StudentInterface
 
     public function updateStudent($id, array $data)
     {
-        $student = Student::where('user_id', $id)->firstOrFail();
+        $student = Student::where('user_id', $id)->first();
         $student->update($data);
 
         return $student;

@@ -70,7 +70,7 @@ class CommentController extends Controller
         }
     }
 
-    public function update(CommentRequest $request, $id)
+    public function update(CommentRequest $request,$lessonId, $id)
     {
         try {
             $comment = $this->commentService->updateComment($id, $request->validated());
@@ -85,7 +85,7 @@ class CommentController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy( $lessonId,$id)
     {
         try {
             $deleted = $this->commentService->deleteComment($id);

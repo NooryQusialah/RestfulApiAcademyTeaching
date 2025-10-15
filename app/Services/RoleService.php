@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\RoleRepository;
 
 class RoleService
@@ -47,4 +48,20 @@ class RoleService
     {
         return $this->roleRepository->removePermissionFromRole($roleId, $permissionName);
     }
+    public function assignRoleToUser(array $data):User
+    {
+        return $this->roleRepository->assignRoleToUser($data);
+    }
+    public function updateRoleOfUser(array $data):User
+    {
+        return $this->roleRepository->updateRoleOfUser($data);
+    }
+
+    public function removeRoleFromUser($userId)
+    {
+        return $this->roleRepository->removeRoleFromUser($userId);
+    }
+    
+
+
 }

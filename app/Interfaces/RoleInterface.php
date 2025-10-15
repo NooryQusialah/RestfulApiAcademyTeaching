@@ -2,6 +2,8 @@
 
 namespace App\Interfaces;
 
+use App\Models\User;
+
 interface RoleInterface
 {
     public function getAllRoles();
@@ -17,4 +19,11 @@ interface RoleInterface
     public function assignPermissionToRole($roleId, $permissionIdName);
 
     public function removePermissionFromRole($roleId, $permissionIds);
+
+    public function assignRoleToUser(array $data):User;
+
+    public function updateRoleOfUser(array $data):User;
+
+    public function removeRoleFromUser($userId);
+
 }
