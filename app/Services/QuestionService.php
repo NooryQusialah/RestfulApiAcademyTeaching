@@ -9,14 +9,14 @@ class QuestionService
     /**
      * Create a new class instance.
      */
-
     protected $questionRepository;
+
     public function __construct(QuestionRepository $questionRepository)
     {
         $this->questionRepository = $questionRepository;
     }
 
-     public function getAllQuestions()
+    public function getAllQuestions()
     {
         return $this->questionRepository->getAll();
     }
@@ -40,5 +40,4 @@ class QuestionService
     {
         return $this->questionRepository->delete($id);
     }
-    
 }

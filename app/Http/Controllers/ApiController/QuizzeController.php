@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\ApiController;
+
 use App\Exceptions\Handler;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,7 @@ class QuizzeController extends Controller
     {
         try {
             $quizzes = $this->quizService->getAllQuizzes();
+
             return ResponseHelper::success(QuizzeResource::collection($quizzes));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -32,7 +34,7 @@ class QuizzeController extends Controller
         try {
             $quiz = $this->quizService->getQuizById($id);
 
-            if (!$quiz) {
+            if (! $quiz) {
                 return ResponseHelper::error('Quiz not found', 404);
             }
 
@@ -58,7 +60,7 @@ class QuizzeController extends Controller
         try {
             $quiz = $this->quizService->updateQuiz($id, $request->validated());
 
-            if (!$quiz) {
+            if (! $quiz) {
                 return ResponseHelper::error('Quiz not found', 404);
             }
 
@@ -73,7 +75,7 @@ class QuizzeController extends Controller
         try {
             $deleted = $this->quizService->deleteQuiz($id);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return ResponseHelper::error('Quiz not found', 404);
             }
 

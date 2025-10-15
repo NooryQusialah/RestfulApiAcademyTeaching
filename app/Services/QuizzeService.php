@@ -9,14 +9,14 @@ class QuizzeService
     /**
      * Create a new class instance.
      */
-
     protected $quizRepository;
+
     public function __construct(QuizzeRepository $quizzeRepository)
     {
         $this->quizRepository = $quizzeRepository;
     }
 
-  public function getAllQuizzes()
+    public function getAllQuizzes()
     {
         return $this->quizRepository->getAll();
     }
@@ -40,5 +40,4 @@ class QuizzeService
     {
         return $this->quizRepository->delete($id);
     }
-
 }

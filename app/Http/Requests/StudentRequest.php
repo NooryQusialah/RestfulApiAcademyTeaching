@@ -51,7 +51,7 @@ class StudentRequest extends FormRequest
     {
         return [
             'enrollment_number.required' => 'Enrollment number is required.',
-            'enrollment_number.unique' => 'This enrollment number already exists.',
+            'enrollment_number.unique' => 'This enrollment number already existsa.',
             'level.required' => 'Level is required.',
             'user_id.exists' => 'The selected user does not exist.',
             'user_id.unique' => 'This user is already registered as a student.',

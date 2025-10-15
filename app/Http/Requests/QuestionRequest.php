@@ -46,5 +46,4 @@ class QuestionRequest extends FormRequest
             'correct_option.in' => 'The correct option must be one of the following: A, B, C, D.',
         ];
     }
-    
 }

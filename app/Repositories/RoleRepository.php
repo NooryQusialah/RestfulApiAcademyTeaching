@@ -54,7 +54,7 @@ class RoleRepository implements RoleInterface
         return $role;
     }
 
-    public function assignRoleToUser($data):User
+    public function assignRoleToUser($data): User
     {
         $user = User::findOrFail($data['user_id']);
 
@@ -63,7 +63,7 @@ class RoleRepository implements RoleInterface
         return $user;
     }
 
-    public function updateRoleOfUser($data):User
+    public function updateRoleOfUser($data): User
     {
         $user = User::findOrFail($data['user_id']);
 
@@ -71,10 +71,12 @@ class RoleRepository implements RoleInterface
 
         return $user;
     }
+
     public function removeRoleFromUser($userId)
     {
-        $user=User::findOrFail($userId);
+        $user = User::findOrFail($userId);
         $user->syncRoles([]);
+
         return $user;
     }
 }

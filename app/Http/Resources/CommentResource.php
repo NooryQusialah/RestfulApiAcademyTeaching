@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentResource extends JsonResource
@@ -12,7 +11,7 @@ class CommentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-      public function toArray($request)
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
@@ -24,6 +23,4 @@ class CommentResource extends JsonResource
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
-
-    
 }

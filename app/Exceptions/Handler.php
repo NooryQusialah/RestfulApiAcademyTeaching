@@ -4,10 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class Handler
+class Handler extends ExceptionHandler
 {
     public static function handle(Exception $exception)
     {
@@ -16,7 +17,9 @@ class Handler
         }
 
         if ($exception instanceof ValidationException) {
-            return response()->json(['error' => $exception->errors()], 422);
+            return response()->json([
+                'errors' => $exception->errors(),
+            ], 422);
         }
 
         if ($exception instanceof HttpException) {
@@ -28,5 +31,12 @@ class Handler
         }
 
         return response()->json(['error' => 'An unexpected error occurred.', 'message' => $exception->getMessage()], 500);
+    }
+
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            'errors' => $exception->errors(),
+        ], $exception->status);
     }
 }

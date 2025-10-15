@@ -48,11 +48,13 @@ class RoleService
     {
         return $this->roleRepository->removePermissionFromRole($roleId, $permissionName);
     }
-    public function assignRoleToUser(array $data):User
+
+    public function assignRoleToUser(array $data): User
     {
         return $this->roleRepository->assignRoleToUser($data);
     }
-    public function updateRoleOfUser(array $data):User
+
+    public function updateRoleOfUser(array $data): User
     {
         return $this->roleRepository->updateRoleOfUser($data);
     }
@@ -61,7 +63,4 @@ class RoleService
     {
         return $this->roleRepository->removeRoleFromUser($userId);
     }
-    
-
-
 }

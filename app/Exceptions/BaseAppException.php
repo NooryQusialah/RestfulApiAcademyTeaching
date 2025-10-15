@@ -18,4 +18,3 @@ class BaseAppException extends Exception
         return $this->statusCode;
     }
 }
-

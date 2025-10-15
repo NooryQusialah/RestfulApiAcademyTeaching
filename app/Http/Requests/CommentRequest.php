@@ -19,7 +19,7 @@ class CommentRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-     public function rules(): array
+    public function rules(): array
     {
         return [
             'user_id' => 'nullable|exists:users,id',
@@ -36,5 +36,4 @@ class CommentRequest extends FormRequest
             'content.max' => 'Content may not be greater than 2000 characters.',
         ];
     }
-
 }

@@ -35,13 +35,14 @@ class QuizzeRepository implements QuizzeInterface
     {
         $quiz = Quiz::findOrFail($id);
         $quiz->update($data);
+
         return $quiz;
     }
 
     public function delete(int $id): bool
     {
         $quiz = Quiz::findOrFail($id);
-        
+
         return $quiz->delete();
 
     }

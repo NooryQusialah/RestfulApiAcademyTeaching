@@ -13,11 +13,13 @@ use App\Services\LessonService;
 class CommentController extends Controller
 {
     protected $commentService;
+
     protected $lessonService;
-    public function __construct(CommentService $commentService , LessonService $lessonService )
+
+    public function __construct(CommentService $commentService, LessonService $lessonService)
     {
         $this->commentService = $commentService;
-        $this->lessonService  = $lessonService;
+        $this->lessonService = $lessonService;
     }
 
     public function index($lessonId)
@@ -28,6 +30,7 @@ class CommentController extends Controller
             if ($comments->isEmpty()) {
                 return ResponseHelper::error('no comments found');
             }
+
             return ResponseHelper::success(CommentResource::collection($comments));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -39,7 +42,7 @@ class CommentController extends Controller
         try {
             $comment = $this->commentService->getCommentById($id);
 
-            if (!$comment) {
+            if (! $comment) {
                 return ResponseHelper::error('Comment not found', 404);
             }
 
@@ -55,11 +58,11 @@ class CommentController extends Controller
             $userid = auth()->id();
             $lesson = $this->lessonService->getLessonById($lessonId);
 
-            if (!$lesson) {
+            if (! $lesson) {
 
                 return ResponseHelper::error('lesson not found ');
             }
-            $data= array_merge($request->validated(),['user_id' => $userid, 'lesson_id' => $lessonId]);
+            $data = array_merge($request->validated(), ['user_id' => $userid, 'lesson_id' => $lessonId]);
             // $request->merge(['user_id' => $userid, 'lesson_id' => $lessonId]);
 
             $comment = $this->commentService->createComment($data);
@@ -70,12 +73,12 @@ class CommentController extends Controller
         }
     }
 
-    public function update(CommentRequest $request,$lessonId, $id)
+    public function update(CommentRequest $request, $lessonId, $id)
     {
         try {
             $comment = $this->commentService->updateComment($id, $request->validated());
 
-            if (!$comment) {
+            if (! $comment) {
                 return ResponseHelper::error('Comment not found', 404);
             }
 
@@ -85,12 +88,12 @@ class CommentController extends Controller
         }
     }
 
-    public function destroy( $lessonId,$id)
+    public function destroy($lessonId, $id)
     {
         try {
             $deleted = $this->commentService->deleteComment($id);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return ResponseHelper::error('Comment not found', 404);
             }
 

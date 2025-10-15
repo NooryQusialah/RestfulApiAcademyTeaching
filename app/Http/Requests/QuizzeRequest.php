@@ -19,7 +19,7 @@ class QuizzeRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-      public function rules(): array
+    public function rules(): array
     {
         return [
             'course_id' => 'required|exists:courses,id',
@@ -28,7 +28,6 @@ class QuizzeRequest extends FormRequest
             'total_marks' => 'nullable|integer|min:0',
         ];
     }
-
 
     public function messages()
     {

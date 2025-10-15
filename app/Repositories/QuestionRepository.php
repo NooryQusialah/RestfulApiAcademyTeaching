@@ -15,7 +15,8 @@ class QuestionRepository implements QuestionInterface
     {
         //
     }
-     public function getAll(): Collection
+
+    public function getAll(): Collection
     {
         return Question::with('quiz')->get();
     }
@@ -34,6 +35,7 @@ class QuestionRepository implements QuestionInterface
     {
         $question = Question::findOrFail($id);
         $question->update($data);
+
         return $question;
     }
 

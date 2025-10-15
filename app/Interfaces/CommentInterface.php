@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CommentInterface
 {
-     public function getAll($lessonId): Collection;
+    public function getAll($lessonId): Collection;
 
     public function getById(int $id): ?Comment;
 

@@ -23,5 +23,4 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained('courses')->cascadeOnDelete();
         });
     }
-
 };

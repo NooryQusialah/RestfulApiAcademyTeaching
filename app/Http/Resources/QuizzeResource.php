@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuizzeResource extends JsonResource
@@ -12,7 +11,7 @@ class QuizzeResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-     public function toArray($request)
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
@@ -24,5 +23,4 @@ class QuizzeResource extends JsonResource
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
-    
 }

@@ -10,7 +10,6 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs;
 
-
     public const SUCCESS_MESSAGE = 'Request Processed Successfully';
 
     public const ERROR_MESSAGE = 'Unable to Process The Request. Please Try Agine ';

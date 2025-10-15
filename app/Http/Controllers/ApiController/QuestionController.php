@@ -22,6 +22,7 @@ class QuestionController extends Controller
     {
         try {
             $questions = $this->questionService->getAllQuestions();
+
             return ResponseHelper::success(QuestionResource::collection($questions));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -33,7 +34,7 @@ class QuestionController extends Controller
         try {
             $question = $this->questionService->getQuestionById($id);
 
-            if (!$question) {
+            if (! $question) {
                 return ResponseHelper::error('Question not found', 404);
             }
 
@@ -59,7 +60,7 @@ class QuestionController extends Controller
         try {
             $question = $this->questionService->updateQuestion($id, $request->validated());
 
-            if (!$question) {
+            if (! $question) {
                 return ResponseHelper::error('Question not found', 404);
             }
 
@@ -74,7 +75,7 @@ class QuestionController extends Controller
         try {
             $deleted = $this->questionService->deleteQuestion($id);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return ResponseHelper::error('Question not found', 404);
             }
 
