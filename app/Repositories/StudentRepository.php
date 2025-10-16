@@ -27,6 +27,9 @@ class StudentRepository implements StudentInterface
     public function updateStudent($id, array $data)
     {
         $student = Student::where('user_id', $id)->first();
+        if (! $student) {
+            return null;
+        }
         $student->update($data);
 
         return $student;
@@ -34,7 +37,10 @@ class StudentRepository implements StudentInterface
 
     public function deleteStudent($id)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::find($id);
+        if (! $student) {
+            return null;
+        }
 
         return $student->delete();
     }

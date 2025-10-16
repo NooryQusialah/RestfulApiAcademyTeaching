@@ -17,4 +17,16 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
             Route::post('/logout', 'logout')->middleware('auth:api');
             Route::post('/tokens/refresh', 'refreshToken')->middleware('auth:api');
         });
+
+    Route::controller(App\Http\Controllers\ApiController\CommentController::class)
+        ->prefix('lessons/{lessonId}/comments')
+        ->whereNumber('lessonId')
+        ->group(function () {
+            Route::get('/', 'index')->withoutMiddleware('auth:api');
+            Route::post('/', 'store')->middleware('auth:api');
+            Route::get('/{id}', 'show')->withoutMiddleware('auth:api')->whereNumber('id');
+            Route::put('/{id}', 'update')->middleware('auth:api')->whereNumber('id');
+            Route::delete('/{id}', 'destroy')->middleware('auth:api')->whereNumber('id');
+
+        });
 });

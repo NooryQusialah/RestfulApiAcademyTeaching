@@ -38,10 +38,11 @@ class RoleController extends Controller
         try {
             $role = $this->roleService->getRoleById($id);
 
-            return ResponseHelper::success(
-                new RoleResource($role),
-                'Role retrieved successfully.'
-            );
+            if (! $role) {
+                return ResponseHelper::error('Role not found', 404);
+            }
+
+            return ResponseHelper::success(new RoleResource($role), 'Role retrieved successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
         }
@@ -63,6 +64,10 @@ class RoleController extends Controller
         try {
             $role = $this->roleService->updateRole($id, $request->validated());
 
+            if (! $role) {
+                return ResponseHelper::error('Role not found', 404);
+            }
+
             return ResponseHelper::success(new RoleResource($role), 'Role updated successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -72,7 +77,11 @@ class RoleController extends Controller
     public function destroy($id)
     {
         try {
-            $this->roleService->deleteRole($id);
+            $role = $this->roleService->deleteRole($id);
+
+            if (! $role) {
+                return ResponseHelper::error('Role not founds', 404);
+            }
 
             return ResponseHelper::success(null, 'Role deleted successfully.');
         } catch (\Exception $e) {
@@ -85,6 +94,9 @@ class RoleController extends Controller
         try {
             $permissionName = $request->input('permission_name');
             $role = $this->roleService->assignPermissionToRole($roleId, $permissionName);
+            if (! $role) {
+                return ResponseHelper::error('Role not found', 404);
+            }
 
             return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission assigned successfully.');
         } catch (\Exception $e) {
@@ -97,6 +109,9 @@ class RoleController extends Controller
         try {
             $permissionName = $request->input('permission_name');
             $role = $this->roleService->removePermissionFromRole($roleId, $permissionName);
+            if (! $role) {
+                return ResponseHelper::error('Role not found', 404);
+            }
 
             return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission removed successfully.');
         } catch (\Exception $e) {
@@ -130,6 +145,10 @@ class RoleController extends Controller
     {
         try {
             $user = $this->roleService->removeRoleFromUser($userId);
+
+            if (! $user) {
+                return ResponseHelper::error('User not found', 404);
+            }
 
             return ResponseHelper::success($user, 'Role removed from user successfully.');
         } catch (\Exception $e) {

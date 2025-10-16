@@ -14,7 +14,7 @@ class TeacherRepository implements TeacherInterface
 
     public function getTeacherById($id)
     {
-        return Teacher::with('user')->findOrFail($id);
+        return Teacher::with('user')->find($id);
     }
 
     public function createTeacher(array $data)
@@ -24,8 +24,10 @@ class TeacherRepository implements TeacherInterface
 
     public function updateTeacher($id, array $data)
     {
-        $teacher = Teacher::where('user_id', $id)->firstOrFail();
-        // $teacher = Teacher::findOrFail($id); --- IGNORE ---
+        $teacher = Teacher::where('user_id', $id)->first();
+        if (! $teacher) {
+            return null;
+        }
         $teacher->update($data);
 
         return $teacher;
@@ -33,14 +35,17 @@ class TeacherRepository implements TeacherInterface
 
     public function deleteTeacher($id)
     {
-        $teacher = Teacher::findOrFail($id);
+        $teacher = Teacher::find($id);
+        if (! $teacher) {
+            return null;
+        }
 
         return $teacher->delete();
     }
 
     public function getTeacherCourses($id)
     {
-        $teacher = Teacher::with('courses')->findOrFail($id);
+        $teacher = Teacher::with('courses')->find($id);
 
         return $teacher->courses;
     }

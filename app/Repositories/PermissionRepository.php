@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\NotFoundException;
 use App\Interfaces\PermissionInterface;
 use App\Models\Permission;
 
@@ -18,7 +19,12 @@ class PermissionRepository implements PermissionInterface
 
     public function getPermissionById($id)
     {
-        return Permission::findOrFail($id);
+        $permission = Permission::find($id);
+        if (! $permission) {
+            throw new NotFoundException('Permission not found.');
+        }
+
+        return $permission;
     }
 
     public function createPermission(array $data)
@@ -28,7 +34,10 @@ class PermissionRepository implements PermissionInterface
 
     public function updatePermission($id, array $data)
     {
-        $permission = Permission::findOrFail($id);
+        $permission = Permission::find($id);
+        if (! $permission) {
+            throw new NotFoundException('Permission not found.');
+        }
         $permission->update($data);
 
         return $permission;
@@ -36,14 +45,21 @@ class PermissionRepository implements PermissionInterface
 
     public function deletePermission($id)
     {
-        $permission = Permission::findOrFail($id);
+        $permission = Permission::find($id);
+        if (! $permission) {
+            throw new NotFoundException('Permission not found.');
+        }
 
         return $permission->delete();
     }
 
     public function assignRoleToPermission($permissionId, $roleName)
     {
-        $permission = Permission::findOrFail($permissionId);
+        $permission = Permission::find($permissionId);
+        if (! $permission) {
+            throw new NotFoundException('Permission not found.');
+        }
+
         $permission->assignRole($roleName);
 
         return $permission;
@@ -60,7 +76,5 @@ class PermissionRepository implements PermissionInterface
         } else {
             return response()->json(['error' => 'Role not assigned to this permission.'], 400);
         }
-
-        // return $permission;
     }
 }

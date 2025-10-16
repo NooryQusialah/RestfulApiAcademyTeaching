@@ -23,7 +23,7 @@ class QuestionRepository implements QuestionInterface
 
     public function getById(int $id): ?Question
     {
-        return Question::with('quiz')->findOrFail($id);
+        return Question::with('quiz')->find($id);
     }
 
     public function create(array $data): Question
@@ -33,7 +33,10 @@ class QuestionRepository implements QuestionInterface
 
     public function update(int $id, array $data): ?Question
     {
-        $question = Question::findOrFail($id);
+        $question = Question::find($id);
+        if (! $question) {
+            return null;
+        }
         $question->update($data);
 
         return $question;
@@ -41,7 +44,10 @@ class QuestionRepository implements QuestionInterface
 
     public function delete(int $id): bool
     {
-        $question = Question::findOrFail($id);
+        $question = Question::find($id);
+        if (! $question) {
+            return false;
+        }
 
         return $question->delete();
     }

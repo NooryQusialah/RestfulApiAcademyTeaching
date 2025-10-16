@@ -23,7 +23,7 @@ class QuizzeRepository implements QuizzeInterface
 
     public function getById(int $id): ?Quiz
     {
-        return Quiz::with(['course', 'questions'])->findOrFail($id);
+        return Quiz::with(['course', 'questions'])->find($id);
     }
 
     public function create(array $data): Quiz
@@ -33,7 +33,10 @@ class QuizzeRepository implements QuizzeInterface
 
     public function update(int $id, array $data): ?Quiz
     {
-        $quiz = Quiz::findOrFail($id);
+        $quiz = Quiz::find($id);
+        if (! $quiz) {
+            return null;
+        }
         $quiz->update($data);
 
         return $quiz;
@@ -41,7 +44,10 @@ class QuizzeRepository implements QuizzeInterface
 
     public function delete(int $id): bool
     {
-        $quiz = Quiz::findOrFail($id);
+        $quiz = Quiz::find($id);
+        if (! $quiz) {
+            return false;
+        }
 
         return $quiz->delete();
 

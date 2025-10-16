@@ -39,6 +39,7 @@ class StudentController extends Controller
 
             return ResponseHelper::success(StudentResource::collection($students));
         } catch (\Exception $e) {
+
             Log::error('Error fetching students: '.$e->getMessage());
 
             return Handler::handle($e);
@@ -74,15 +75,12 @@ class StudentController extends Controller
     {
         try {
             $student = DB::transaction(function () use ($studentRequest, $userRequest) {
-                // Step 1: Create user
-                $user = $this->userCredentialService->register($userRequest->validated());
 
-                // Step 2: Prepare and create student
+                $user = $this->userCredentialService->register($userRequest->validated());
                 $studentData = array_merge($studentRequest->validated(), ['user_id' => $user->id]);
                 $student = $this->studentService->createStudent($studentData);
 
                 return $student;
-                // return $student; // transaction returns this value if successful
 
             });
 
@@ -121,7 +119,10 @@ class StudentController extends Controller
     public function destroy($id)
     {
         try {
-            $this->studentService->deleteStudent($id);
+            $student = $this->studentService->deleteStudent($id);
+            if (! $student) {
+                throw new NotFoundException('Student not found.');
+            }
 
             return ResponseHelper::success(null, 'Student deleted successfully.');
         } catch (\Exception $e) {
@@ -137,12 +138,8 @@ class StudentController extends Controller
 
                 $courseId = $request->input('course_id');
                 $studentId = Auth::user()->student->id;
-
-                // return  response()->json(['data'=> $enrollmentRequest->validated() ]);
                 $enrollmentData = array_merge($enrollmentRequest->validated(), ['student_id' => $studentId, 'course_id' => $courseId]);
                 $response = $this->studentService->assignCourseToStudent($studentId, $courseId);
-
-                // If already enrolled, return error immediately
                 if (isset($response) && $response instanceof \Illuminate\Http\JsonResponse) {
                     return $response;
                 }
@@ -160,8 +157,6 @@ class StudentController extends Controller
     {
         try {
             $studentId = Auth::user()->student->id;
-
-            // Call the service method
             $response = $this->studentService->removeCourseFromStudent($studentId, $courseId);
             if (isset($response) && $response instanceof \Illuminate\Http\JsonResponse) {
                 return $response;

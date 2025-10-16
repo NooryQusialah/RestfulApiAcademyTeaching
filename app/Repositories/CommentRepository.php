@@ -24,7 +24,8 @@ class CommentRepository implements CommentInterface
 
     public function getById(int $id): ?Comment
     {
-        return Comment::with(['user', 'lesson'])->findOrFail($id);
+
+        return Comment::with(['user', 'lesson'])->find($id);
     }
 
     public function create(array $data): Comment
@@ -34,8 +35,10 @@ class CommentRepository implements CommentInterface
 
     public function update(int $id, array $data): ?Comment
     {
-        $comment = Comment::findOrFail($id);
-
+        $comment = Comment::find($id);
+        if (! $comment) {
+            return null;
+        }
         $comment->update($data);
 
         return $comment;
@@ -43,7 +46,10 @@ class CommentRepository implements CommentInterface
 
     public function delete(int $id): bool
     {
-        $comment = Comment::findOrFail($id);
+        $comment = Comment::find($id);
+        if (! $comment) {
+            return false;
+        }
 
         return $comment->delete();
     }

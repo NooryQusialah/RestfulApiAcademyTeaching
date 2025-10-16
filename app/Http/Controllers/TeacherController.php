@@ -37,6 +37,9 @@ class TeacherController extends Controller
     {
         try {
             $teacher = $this->teacherService->getTeacherById($id);
+            if (! $teacher) {
+                return ResponseHelper::error('Teacher not found', 404);
+            }
 
             return ResponseHelper::success(new TeacherResource($teacher));
         } catch (\Exception $e) {
@@ -49,13 +52,9 @@ class TeacherController extends Controller
         try {
 
             $userRequestData = $userRequest->validated();
-
-            // return response()->json(['message' => 'ok','userRequest'=>$userRequestData], 200);
-
             $user = $this->userCredentialService->register($userRequestData);
             $teacherData = array_merge($teacherRequest->validated(), ['user_id' => $user->id]);
 
-            // return response()->json(['message' => 'ok','teacherRequest'=>$teacherData], 200);
             $teacher = $this->teacherService->createTeacher($teacherData);
 
             return ResponseHelper::success(new TeacherResource($teacher), 'Teacher created successfully.');
@@ -72,6 +71,10 @@ class TeacherController extends Controller
 
             $teacher = $this->teacherService->updateTeacher($id, $teacherRequest->validated());
 
+            if (! $teacher) {
+                return ResponseHelper::error('Teacher not found', 404);
+            }
+
             return ResponseHelper::success(new TeacherResource($teacher), 'Teacher updated successfully.');
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -81,7 +84,10 @@ class TeacherController extends Controller
     public function destroy($id)
     {
         try {
-            $this->teacherService->deleteTeacher($id);
+            $teacher = $this->teacherService->deleteTeacher($id);
+            if (! $teacher) {
+                return ResponseHelper::error('Teacher not found', 404);
+            }
 
             return ResponseHelper::success(null, 'Teacher deleted successfully.');
         } catch (\Exception $e) {
@@ -93,6 +99,9 @@ class TeacherController extends Controller
     {
         try {
             $courses = $this->teacherService->getTeacherCourses($id);
+            if ($courses === null) {
+                return ResponseHelper::error('Teacher not found', 404);
+            }
 
             return ResponseHelper::success($courses);
         } catch (\Exception $e) {

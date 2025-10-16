@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(StudentController::class)
     ->prefix('students')
     ->group(function () {
-        // Public route
         Route::post('/', 'store');
-
-        // Protected routes
         Route::middleware(['auth:api', 'role:student'])->group(function () {
             Route::get('/', 'index');
             Route::get('/{id}', 'show')->whereNumber('id');

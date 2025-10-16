@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\NotFoundException;
 use App\Interfaces\CourseInterface;
 use App\Models\Course;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,7 +16,9 @@ class CourseRepository implements CourseInterface
 
     public function getCourseById(int $id): ?Course
     {
-        return Course::findOrFail($id);
+        $course = Course::find($id);
+
+        return $course;
     }
 
     public function createCourse(array $data): Course
@@ -25,7 +28,11 @@ class CourseRepository implements CourseInterface
 
     public function updateCourse(int $id, array $data): Course
     {
-        $course = Course::findOrFail($id);
+        $course = Course::find($id);
+
+        if (! $course) {
+            throw new NotFoundException('Course not found.');
+        }
         $course->update($data);
 
         return $course;
@@ -33,7 +40,10 @@ class CourseRepository implements CourseInterface
 
     public function deleteCourse(int $id): bool
     {
-        $course = Course::findOrFail($id);
+        $course = Course::find($id);
+        if (! $course) {
+            throw new NotFoundException('Course not found.');
+        }
 
         return $course->delete();
     }

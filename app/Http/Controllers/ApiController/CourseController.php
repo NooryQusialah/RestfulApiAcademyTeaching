@@ -36,6 +36,10 @@ class CourseController extends Controller
         try {
             $course = $this->courseService->getCourseById($id);
 
+            if (! $course) {
+                return ResponseHelper::error('Course not found.', 404);
+            }
+
             return ResponseHelper::success(new CourseResource($course));
         } catch (\Exception $e) {
             return Handler::handle($e);
@@ -45,7 +49,6 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
         try {
-            // return response()->json(['message' => 'Test','data' => $request->all()]);
             $course = $this->courseService->createCourse($request->validated());
 
             return ResponseHelper::success(new CourseResource($course), 'Course created successfully.', 201);

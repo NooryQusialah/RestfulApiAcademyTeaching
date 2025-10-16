@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\NotFoundException;
 use App\Interfaces\LessonInterface;
 use App\Models\Lesson;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,9 @@ class LessonRepository implements LessonInterface
 
     public function getLessonById(int $id): ?Lesson
     {
-        return Lesson::find($id);
+        $lesson = Lesson::find($id);
+
+        return $lesson;
     }
 
     public function createLesson(array $data): Lesson
@@ -27,7 +30,7 @@ class LessonRepository implements LessonInterface
     {
         $lesson = Lesson::find($id);
         if (! $lesson) {
-            return null;
+            throw new NotFoundException('Lesson not found.');
         }
         $lesson->update($data);
 
@@ -38,7 +41,7 @@ class LessonRepository implements LessonInterface
     {
         $lesson = Lesson::find($id);
         if (! $lesson) {
-            return false;
+            throw new NotFoundException('Lesson not found.');
         }
 
         return $lesson->delete();

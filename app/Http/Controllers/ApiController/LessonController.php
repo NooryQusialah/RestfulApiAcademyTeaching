@@ -36,6 +36,7 @@ class LessonController extends Controller
             $lesson = $this->lessonService->createLesson($request->validated());
 
             return ResponseHelper::success(new LessonResource($lesson), 'Lesson created successfully', 201);
+
         } catch (Exception $e) {
             return Handler::handle($e);
         }

@@ -22,11 +22,8 @@ class UserCredentialController extends Controller
         try {
 
             $user = $this->userCredentialService->register($request->all());
-
             if (! $user) {
-
                 return ResponseHelper::error('Registration failed', 500);
-
             }
 
             return ResponseHelper::success(new UserResource($user), 'User registered successfully');
@@ -43,9 +40,7 @@ class UserCredentialController extends Controller
         try {
 
             $user = $this->userCredentialService->updateUser($userRegisterRequest->all(), $userId);
-
             if (! $user) {
-
                 return ResponseHelper::error('Update failed', 500);
             }
 
@@ -55,7 +50,6 @@ class UserCredentialController extends Controller
             return response()->json([
                 'error' => 'Update failed: '.$e->getMessage(),
             ], 500);
-            //  return ResponseHelper::error($e->getMessage(), 500);
         }
     }
 

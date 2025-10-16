@@ -9,6 +9,7 @@ use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Services\CommentService;
 use App\Services\LessonService;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -43,7 +44,7 @@ class CommentController extends Controller
             $comment = $this->commentService->getCommentById($id);
 
             if (! $comment) {
-                return ResponseHelper::error('Comment not found', 404);
+                return ResponseHelper::error('Comment not founds', 404);
             }
 
             return ResponseHelper::success(new CommentResource($comment));
@@ -55,16 +56,13 @@ class CommentController extends Controller
     public function store(CommentRequest $request, $lessonId)
     {
         try {
-            $userid = auth()->id();
+            $userid = Auth::id();
             $lesson = $this->lessonService->getLessonById($lessonId);
 
             if (! $lesson) {
-
                 return ResponseHelper::error('lesson not found ');
             }
             $data = array_merge($request->validated(), ['user_id' => $userid, 'lesson_id' => $lessonId]);
-            // $request->merge(['user_id' => $userid, 'lesson_id' => $lessonId]);
-
             $comment = $this->commentService->createComment($data);
 
             return ResponseHelper::success(new CommentResource($comment), 'Comment created successfully.');

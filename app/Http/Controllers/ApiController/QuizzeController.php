@@ -61,7 +61,7 @@ class QuizzeController extends Controller
             $quiz = $this->quizService->updateQuiz($id, $request->validated());
 
             if (! $quiz) {
-                return ResponseHelper::error('Quiz not found', 404);
+                return ResponseHelper::error('Quiz not founds', 404);
             }
 
             return ResponseHelper::success(new QuizzeResource($quiz), 'Quiz updated successfully.');
@@ -76,7 +76,7 @@ class QuizzeController extends Controller
             $deleted = $this->quizService->deleteQuiz($id);
 
             if (! $deleted) {
-                return ResponseHelper::error('Quiz not found', 404);
+                return ResponseHelper::error('Quiz not founds', 404);
             }
 
             return ResponseHelper::success(null, 'Quiz deleted successfully.');

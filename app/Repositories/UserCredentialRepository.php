@@ -27,11 +27,7 @@ class UserCredentialRepository implements UserCredentialInterface
         }
 
         $user = Auth::guard('web')->user();
-
-        // Delete old tokens
         $user->tokens()->delete();
-
-        // Create new token
         $token = $user->createToken('authToken')->accessToken;
 
         return [
