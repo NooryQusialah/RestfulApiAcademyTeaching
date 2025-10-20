@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
-use App\Exceptions\Handler;
+use App\Exceptions\NotFoundException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
@@ -21,61 +21,50 @@ class CourseController extends Controller
 
     public function index(Request $request)
     {
-        try {
-            $limit = $request->query('limit', 10);
-            $courses = $this->courseService->getAllCourses($limit);
 
-            return ResponseHelper::success(CourseResource::collection($courses));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        $limit = $request->query('limit', 10);
+        $courses = $this->courseService->getAllCourses($limit);
+
+        return ResponseHelper::success(CourseResource::collection($courses));
+
     }
 
     public function show($id)
     {
-        try {
-            $course = $this->courseService->getCourseById($id);
 
-            if (! $course) {
-                return ResponseHelper::error('Course not found.', 404);
-            }
+        $course = $this->courseService->getCourseById($id);
 
-            return ResponseHelper::success(new CourseResource($course));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $course) {
+            throw new NotFoundException('Course not found');
         }
+
+        return ResponseHelper::success(new CourseResource($course));
+
     }
 
     public function store(CourseRequest $request)
     {
-        try {
-            $course = $this->courseService->createCourse($request->validated());
+        $course = $this->courseService->createCourse($request->validated());
 
-            return ResponseHelper::success(new CourseResource($course), 'Course created successfully.', 201);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success(new CourseResource($course), 'Course created successfully.', 201);
+
     }
 
     public function update(CourseRequest $request, $id)
     {
-        try {
-            $course = $this->courseService->updateCourse($id, $request->validated());
 
-            return ResponseHelper::success(new CourseResource($course), 'Course updated successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        $course = $this->courseService->updateCourse($id, $request->validated());
+
+        return ResponseHelper::success(new CourseResource($course), 'Course updated successfully.');
+
     }
 
     public function destroy($id)
     {
-        try {
-            $this->courseService->deleteCourse($id);
 
-            return ResponseHelper::success(null, 'Course deleted successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        $this->courseService->deleteCourse($id);
+
+        return ResponseHelper::success(null, 'Course deleted successfully.');
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
-use App\Exceptions\Handler;
+use App\Exceptions\NotFoundException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
@@ -25,79 +25,63 @@ class CommentController extends Controller
 
     public function index($lessonId)
     {
-        try {
-            $comments = $this->commentService->getAllComments($lessonId);
+        $comments = $this->commentService->getAllComments($lessonId);
 
-            if ($comments->isEmpty()) {
-                return ResponseHelper::error('no comments found');
-            }
-
-            return ResponseHelper::success(CommentResource::collection($comments));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if ($comments->isEmpty()) {
+            return ResponseHelper::error('no comments found');
         }
+
+        return ResponseHelper::success(CommentResource::collection($comments));
+
     }
 
     public function show($id)
     {
-        try {
-            $comment = $this->commentService->getCommentById($id);
+        $comment = $this->commentService->getCommentById($id);
 
-            if (! $comment) {
-                return ResponseHelper::error('Comment not founds', 404);
-            }
-
-            return ResponseHelper::success(new CommentResource($comment));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $comment) {
+            throw new NotFoundException('Comment not found');
         }
+
+        return ResponseHelper::success(new CommentResource($comment));
     }
 
     public function store(CommentRequest $request, $lessonId)
     {
-        try {
-            $userid = Auth::id();
-            $lesson = $this->lessonService->getLessonById($lessonId);
 
-            if (! $lesson) {
-                return ResponseHelper::error('lesson not found ');
-            }
-            $data = array_merge($request->validated(), ['user_id' => $userid, 'lesson_id' => $lessonId]);
-            $comment = $this->commentService->createComment($data);
+        $userid = Auth::id();
+        $lesson = $this->lessonService->getLessonById($lessonId);
 
-            return ResponseHelper::success(new CommentResource($comment), 'Comment created successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $lesson) {
+            throw new NotFoundException('lesson not found');
         }
+        $data = array_merge($request->validated(), ['user_id' => $userid, 'lesson_id' => $lessonId]);
+        $comment = $this->commentService->createComment($data);
+
+        return ResponseHelper::success(new CommentResource($comment), 'Comment created successfully.');
+
     }
 
     public function update(CommentRequest $request, $lessonId, $id)
     {
-        try {
-            $comment = $this->commentService->updateComment($id, $request->validated());
 
-            if (! $comment) {
-                return ResponseHelper::error('Comment not found', 404);
-            }
+        $comment = $this->commentService->updateComment($id, $request->validated());
 
-            return ResponseHelper::success(new CommentResource($comment), 'Comment updated successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $comment) {
+            throw new NotFoundException('Comment not found');
         }
+
+        return ResponseHelper::success(new CommentResource($comment), 'Comment updated successfully.');
     }
 
     public function destroy($lessonId, $id)
     {
-        try {
-            $deleted = $this->commentService->deleteComment($id);
+        $deleted = $this->commentService->deleteComment($id);
 
-            if (! $deleted) {
-                return ResponseHelper::error('Comment not found', 404);
-            }
-
-            return ResponseHelper::success(null, 'Comment deleted successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $deleted) {
+            throw new NotFoundException('Comment not found');
         }
+
+        return ResponseHelper::success(null, 'Comment deleted successfully.');
     }
 }

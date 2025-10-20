@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Handler;
 use App\Http\Middleware\CheckAdminRole;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -53,6 +54,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'error' => $e->getMessage() ?: 'Forbidden',
                 ], 403);
+            }
+        });
+        $exceptions->renderable(function (Throwable $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return Handler::handle($e);
             }
         });
     })

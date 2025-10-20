@@ -34,16 +34,10 @@ class StudentController extends Controller
      */
     public function index()
     {
-        try {
-            $students = $this->studentService->getAllStudents();
+        $students = $this->studentService->getAllStudents();
 
-            return ResponseHelper::success(StudentResource::collection($students));
-        } catch (\Exception $e) {
+        return ResponseHelper::success(StudentResource::collection($students));
 
-            Log::error('Error fetching students: '.$e->getMessage());
-
-            return Handler::handle($e);
-        }
     }
 
     /**
@@ -51,21 +45,14 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        try {
 
-            $student = $this->studentService->getStudentById($id);
+        $student = $this->studentService->getStudentById($id);
 
-            if (! $student) {
-                throw new NotFoundException('Student not found.');
-            }
-
-            return ResponseHelper::success(new StudentResource($student));
-        } catch (\Exception $e) {
-
-            Log::error('Error fetching student: '.$e->getMessage());
-
-            return Handler::handle($e);
+        if (! $student) {
+            throw new NotFoundException('Student not found.');
         }
+
+        return ResponseHelper::success(new StudentResource($student));
     }
 
     /**
@@ -118,16 +105,13 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $student = $this->studentService->deleteStudent($id);
-            if (! $student) {
-                throw new NotFoundException('Student not found.');
-            }
-
-            return ResponseHelper::success(null, 'Student deleted successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        $student = $this->studentService->deleteStudent($id);
+        if (! $student) {
+            throw new NotFoundException('Student not found.');
         }
+
+        return ResponseHelper::success(null, 'Student deleted successfully.');
+
     }
 
     public function assignCourse(Request $request, EnrollmentRequest $enrollmentRequest)
@@ -176,27 +160,19 @@ class StudentController extends Controller
      */
     public function courses()
     {
-        try {
-            $id = Auth::user()->student->id;
-            $courses = $this->studentService->getStudentCourses($id);
+        $id = Auth::user()->student->id;
+        $courses = $this->studentService->getStudentCourses($id);
 
-            return ResponseHelper::success($courses);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
-
+        return ResponseHelper::success($courses);
     }
 
     public function studentCourse($courseId)
     {
-        try {
 
-            $course = $this->studentService->getStudentCourse($courseId);
+        $course = $this->studentService->getStudentCourse($courseId);
 
-            return ResponseHelper::success($course);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success($course);
+
     }
 
     /**
@@ -204,13 +180,11 @@ class StudentController extends Controller
      */
     public function enrollments($id)
     {
-        try {
-            $enrollments = $this->studentService->getStudentEnrollments($id);
 
-            return ResponseHelper::success($enrollments);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        $enrollments = $this->studentService->getStudentEnrollments($id);
+
+        return ResponseHelper::success($enrollments);
+
     }
 
     /**
@@ -218,13 +192,10 @@ class StudentController extends Controller
      */
     public function payments($id)
     {
-        try {
-            $payments = $this->studentService->getStudentPayments($id);
+        $payments = $this->studentService->getStudentPayments($id);
 
-            return ResponseHelper::success($payments);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success($payments);
+
     }
 
     /**
@@ -232,12 +203,8 @@ class StudentController extends Controller
      */
     public function quizAttempts($id)
     {
-        try {
-            $attempts = $this->studentService->getStudentQuizAttempts($id);
+        $attempts = $this->studentService->getStudentQuizAttempts($id);
 
-            return ResponseHelper::success($attempts);
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success($attempts);
     }
 }

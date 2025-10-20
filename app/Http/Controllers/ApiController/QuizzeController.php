@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
-use App\Exceptions\Handler;
+use App\Exceptions\NotFoundException;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QuizzeRequest;
@@ -20,68 +20,52 @@ class QuizzeController extends Controller
 
     public function index()
     {
-        try {
-            $quizzes = $this->quizService->getAllQuizzes();
 
-            return ResponseHelper::success(QuizzeResource::collection($quizzes));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        $quizzes = $this->quizService->getAllQuizzes();
+
+        return ResponseHelper::success(QuizzeResource::collection($quizzes));
+
     }
 
     public function show($id)
     {
-        try {
-            $quiz = $this->quizService->getQuizById($id);
+        $quiz = $this->quizService->getQuizById($id);
 
-            if (! $quiz) {
-                return ResponseHelper::error('Quiz not found', 404);
-            }
-
-            return ResponseHelper::success(new QuizzeResource($quiz));
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $quiz) {
+            throw new NotFoundException('Quiz not found');
         }
+
+        return ResponseHelper::success(new QuizzeResource($quiz));
+
     }
 
     public function store(QuizzeRequest $request)
     {
-        try {
-            $quiz = $this->quizService->createQuiz($request->validated());
+        $quiz = $this->quizService->createQuiz($request->validated());
 
-            return ResponseHelper::success(new QuizzeResource($quiz), 'Quiz created successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success(new QuizzeResource($quiz), 'Quiz created successfully.');
+
     }
 
     public function update(QuizzeRequest $request, $id)
     {
-        try {
-            $quiz = $this->quizService->updateQuiz($id, $request->validated());
-
-            if (! $quiz) {
-                return ResponseHelper::error('Quiz not founds', 404);
-            }
-
-            return ResponseHelper::success(new QuizzeResource($quiz), 'Quiz updated successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        $quiz = $this->quizService->updateQuiz($id, $request->validated());
+        if (! $quiz) {
+            throw new NotFoundException('Quiz not found');
         }
+
+        return ResponseHelper::success(new QuizzeResource($quiz), 'Quiz updated successfully.');
+
     }
 
     public function destroy($id)
     {
-        try {
-            $deleted = $this->quizService->deleteQuiz($id);
+        $deleted = $this->quizService->deleteQuiz($id);
 
-            if (! $deleted) {
-                return ResponseHelper::error('Quiz not founds', 404);
-            }
-
-            return ResponseHelper::success(null, 'Quiz deleted successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $deleted) {
+            throw new NotFoundException('Quiz not found');
         }
+
+        return ResponseHelper::success(null, 'Quiz deleted successfully.');
     }
 }

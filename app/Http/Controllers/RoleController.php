@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\Handler;
+use App\Exceptions\NotFoundException;
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\AssignUserRole;
 use App\Http\Requests\RoleRequest;
@@ -21,138 +21,111 @@ class RoleController extends Controller
 
     public function index()
     {
-        try {
-            $roles = $this->roleService->getAllRoles();
+        $roles = $this->roleService->getAllRoles();
 
-            return ResponseHelper::success(
-                RoleResource::collection($roles),
-                'Roles retrieved successfully.'
-            );
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success(
+            RoleResource::collection($roles),
+            'Roles retrieved successfully.'
+        );
+
     }
 
     public function show($id)
     {
-        try {
-            $role = $this->roleService->getRoleById($id);
 
-            if (! $role) {
-                return ResponseHelper::error('Role not found', 404);
-            }
+        $role = $this->roleService->getRoleById($id);
 
-            return ResponseHelper::success(new RoleResource($role), 'Role retrieved successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $role) {
+            throw new NotFoundException('Role not found');
         }
+
+        return ResponseHelper::success(new RoleResource($role), 'Role retrieved successfully.');
+
     }
 
     public function store(RoleRequest $request)
     {
-        try {
-            $role = $this->roleService->createRole($request->validated());
+        $role = $this->roleService->createRole($request->validated());
 
-            return ResponseHelper::success(new RoleResource($role), 'Role created successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success(new RoleResource($role), 'Role created successfully.');
+
     }
 
     public function update(RoleRequest $request, $id)
     {
-        try {
-            $role = $this->roleService->updateRole($id, $request->validated());
 
-            if (! $role) {
-                return ResponseHelper::error('Role not found', 404);
-            }
+        $role = $this->roleService->updateRole($id, $request->validated());
 
-            return ResponseHelper::success(new RoleResource($role), 'Role updated successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $role) {
+            throw new NotFoundException('Role not found');
         }
+
+        return ResponseHelper::success(new RoleResource($role), 'Role updated successfully.');
+
     }
 
     public function destroy($id)
     {
-        try {
-            $role = $this->roleService->deleteRole($id);
+        $role = $this->roleService->deleteRole($id);
 
-            if (! $role) {
-                return ResponseHelper::error('Role not founds', 404);
-            }
-
-            return ResponseHelper::success(null, 'Role deleted successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $role) {
+            throw new NotFoundException('Role not found');
         }
+
+        return ResponseHelper::success(null, 'Role deleted successfully.');
     }
 
     public function assignPermission(Request $request, $roleId)
     {
-        try {
-            $permissionName = $request->input('permission_name');
-            $role = $this->roleService->assignPermissionToRole($roleId, $permissionName);
-            if (! $role) {
-                return ResponseHelper::error('Role not found', 404);
-            }
 
-            return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission assigned successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        $permissionName = $request->input('permission_name');
+        $role = $this->roleService->assignPermissionToRole($roleId, $permissionName);
+        if (! $role) {
+            throw new NotFoundException('Role not found');
         }
+
+        return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission assigned successfully.');
+
     }
 
     public function removePermission(Request $request, $roleId)
     {
-        try {
-            $permissionName = $request->input('permission_name');
-            $role = $this->roleService->removePermissionFromRole($roleId, $permissionName);
-            if (! $role) {
-                return ResponseHelper::error('Role not found', 404);
-            }
 
-            return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission removed successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        $permissionName = $request->input('permission_name');
+        $role = $this->roleService->removePermissionFromRole($roleId, $permissionName);
+        if (! $role) {
+            throw new NotFoundException('Role not found');
         }
+
+        return ResponseHelper::success(new RoleResource($role->load('permissions')), 'Permission removed successfully.');
+
     }
 
     public function assignRoleToUser(AssignUserRole $assignUserRole)
     {
-        try {
-            $user = $this->roleService->assignRoleToUser($assignUserRole->validated());
+        $user = $this->roleService->assignRoleToUser($assignUserRole->validated());
 
-            return ResponseHelper::success($user, 'Role assigned to user successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success($user, 'Role assigned to user successfully.');
+
     }
 
     public function updateRoleOfUser(AssignUserRole $assignUserRole)
     {
-        try {
-            $user = $this->roleService->updateRoleOfUser($assignUserRole->validated());
+        $user = $this->roleService->updateRoleOfUser($assignUserRole->validated());
 
-            return ResponseHelper::success($user, 'User role updated successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
-        }
+        return ResponseHelper::success($user, 'User role updated successfully.');
+
     }
 
     public function removeRoleFromUser($userId)
     {
-        try {
-            $user = $this->roleService->removeRoleFromUser($userId);
+        $user = $this->roleService->removeRoleFromUser($userId);
 
-            if (! $user) {
-                return ResponseHelper::error('User not found', 404);
-            }
-
-            return ResponseHelper::success($user, 'Role removed from user successfully.');
-        } catch (\Exception $e) {
-            return Handler::handle($e);
+        if (! $user) {
+            throw new NotFoundException('User not found');
         }
+
+        return ResponseHelper::success($user, 'Role removed from user successfully.');
+
     }
 }

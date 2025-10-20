@@ -13,7 +13,10 @@ class Handler extends ExceptionHandler
     public static function handle(Exception $exception)
     {
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json(['error' => 'Resource not found.'], 404);
+            return response()->json(['error' => $exception->getMessage() ?: 'Resource not found.'], 404);
+        }
+        if ($exception instanceof NotFoundException) {
+            return response()->json(['error' => $exception->getMessage() ?: 'Resource not found.'], 404);
         }
 
         if ($exception instanceof ValidationException) {
